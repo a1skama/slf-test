@@ -1,6 +1,6 @@
 <template>
   <div class="flex flex-col">
-    <!-- <LoadingComponent :is-loading="showLoading" /> -->
+    <LoadingComponent :is-loading="showLoading" />
 
     <div v-if="!showLoading" class="overflow-hidden content">
       <HeaderComponent v-if="data?.contacts" :contacts="data.contacts" />
