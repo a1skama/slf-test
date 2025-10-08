@@ -18,7 +18,7 @@
         <button
           v-for="(link, linkId) in headerLinks"
           :key="linkId"
-          class="text-xs text-white uppercase 2xl:text-sm hover:text-[#A3B8D0] transition-colors duration-500"
+          class="text-xs text-white uppercase 2xl:text-sm hover:text-[#A3B8D0] transition-colors duration-500 shrink-0"
           @click="scrollToSection(link.link)"
         >
           {{ link.title }}
@@ -29,7 +29,7 @@
         <div class="hidden gap-5 sm:flex h-11 xl:h-fit">
             <NuxtLink
             to="/faq"
-            class="btn btn-white-02"
+            class="btn btn-white-02 !hidden xl:!flex"
           >
             Вопрос-ответ
           </NuxtLink>
