@@ -5,7 +5,7 @@
 
       <div class="text-right text-sm text-black">
         <div>ИП Андрей Семин </div>
-        <div>603022,г. Нижний Новгород, ул. Оранжерейная 1-я, д. 44, кв. 10</div>
+        <div>603022,г. Нижний Новгород, <br> ул. Оранжерейная 1-я, д. 44, кв. 10</div>
 
         <div>Телефон: 8 (800) 600 04 62</div>
 
@@ -25,7 +25,7 @@
             <tr class="border-t">
               <td class="p-2 text-sm"> Получатель <br>ИНН 525714971677
                 ИП Семин А.С.</td>
-              <td class="p-2 text-sm text-left">Сч №</td>
+              <td class="p-2 text-sm text-left whitespace-pre">Сч №</td>
               <td class="p-2 text-sm text-left">40802810071210001271</td>
             </tr>
 
@@ -34,7 +34,7 @@
                 <br>Московский филиал АО КБ «Модульбанк»
                 ИП Семин А.С.
               </td>
-              <td class="p-2 text-sm text-left">БИК
+              <td class="p-2 text-sm text-left">БИК   
                 <br>Сч №
               </td>
               <td class="p-2 text-sm text-left">044525092 <br>30101810645250000092</td>
@@ -54,7 +54,7 @@
           Основание:
         </span>
         <span>Оферта/Условия оказания услуг</span>
-        <table class="w-full border-collapse">
+        <table class="w-full border-collapse mt-4">
           <tbody>
 
             <tr class="border-t">

@@ -1,9 +1,10 @@
 <template>
-    <div class="fixed top-0 left-0 w-full h-full z-[999] flex items-center justify-center overflow-scroll">
-        <div class="absolute inset-0 bg-white/20 backdrop-blur-2xl z-20 cursor-pointer" @click="closeModal('pay')">
+    <div class="fixed top-0 left-0 w-full h-full z-[999] md:p-10 overflow-scroll flex">
+        <div class="absolute inset-0 bg-white/20 backdrop-blur-2xl z-20 cursor-pointer w-full h-full" @click="closeModal('pay')">
         </div>
+
         <div
-            class="bg-blue-100 p-5 xl:p-[30px] 2xl:p-10 z-30 w-full md:w-fit rounded-[20px] flex flex-col gap-5 xl:gap-[30px] md:min-w-[620px] xl:min-w-[800px] 2xl:min-w-[900px] absolute md:static top-0">
+            class="bg-blue-100 p-5 xl:p-[30px] 2xl:p-10 z-30 w-full md:w-fit md:rounded-[20px] flex flex-col gap-5 xl:gap-[30px] xl:w-[800px] 2xl:w-[900px] overflow-auto max-h-fit m-auto">
             <div class="flex items-center justify-between gap-8">
                 <span
                     class="text-white text-lg font-medium md:text-[1.625rem] xl:text-[2rem] 2xl:text-[2.875rem]">Оплата
@@ -34,15 +35,16 @@
                 <form ref="formElement" class="grid grid-cols-1 xl:grid-cols-2 gap-[30px] items-end mt-8"
                     autocomplete="off" novalidate @submit.prevent="onSubmitForm">
                     <BaseInput v-model="form.name" :errors="v$.name.$errors" type="text" required placeholder="Имя*"
-                        class="w-full" />
+                       class="w-full h-full" />
 
                     <BaseInput v-model="form.phone" :errors="v$.phone.$errors" type="tel" required
-                        maska="+7 (###) ###-##-##" placeholder="Телефон*" class="w-full" />
+                        maska="+7 (###) ###-##-##" placeholder="Телефон*"class="w-full h-full" />
 
                     <BaseInput v-model="form.email" :errors="v$.email.$errors" type="email" label="Почта"
-                        placeholder="E-mail" class="w-full" />
+                        placeholder="E-mail"class="w-full h-full" />
 
-                    <BaseInput type="text" maska="##.##.####" placeholder="Выберите дату и время*" />
+                    <BaseInput type="text" maska="##.##.####" v-model="form.date" :errors="v$.date.$errors" label="Дата"
+                        required placeholder="Выберите дату и время*"class="w-full h-full"/>
 
                     <div class="flex flex-wrap items-center justify-center gap-5 col-span-full">
                         <div v-if="form.files" class="flex flex-wrap items-center gap-5">
@@ -62,7 +64,7 @@
                             </div>
                         </div>
 
-                        <button type="button" class="flex items-center gap-2.5">
+                        <button type="button" class="flex items-center gap-2.5" @click="open">
                             <div class="h-11 w-11 bg-blue-500 2xl:w-[54px] 2xl:h-[54px] rounded-full">
                                 <IconFileCircle class="flex-shrink-0 w-full h-auto" />
                             </div>
@@ -124,6 +126,8 @@
                 </button>
             </div>
         </div>
+
+
         <div class="hidden">
             <PayFile ref="payFileComponent" />
         </div>
@@ -192,6 +196,7 @@ const form = reactive({
     phone: "",
     email: "",
     comment: "",
+    date: "",
     privacy: false,
     files: [],
 });
@@ -200,6 +205,7 @@ const rules = {
     name: { required },
     phone: { required, minLength: minLength(18) },
     email: { email },
+    date: { required },
 };
 
 const v$ = useVuelidate(rules, form);

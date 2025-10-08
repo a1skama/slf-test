@@ -1,7 +1,7 @@
 <template>
   <div class="bg-gray-400" id="certificates">
     <div
-      class="_container flex flex-col gap-5 sm:gap-5 xl:gap-[30px] 2xl:gap-10 py-[60px] sm:py-20 xl:py-[120px] 2xl:py-[200px]"
+      class="_container flex flex-col gap-5 sm:gap-5 xl:gap-[30px] 2xl:gap-10 pb-[60px] sm:pb-20 xl:pb-[120px] 2xl:pb-[200px]"
     >
       <h2
         ref="header"
