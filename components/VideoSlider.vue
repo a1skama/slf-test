@@ -22,9 +22,9 @@
         clickable: true,
         el: '.videoPagination'
       }" :navigation="{
-          nextEl: '.videoSwiperNext',
-          prevEl: '.videoSwiperPrev',
-        }" :breakpoints="{
+        nextEl: '.videoSwiperNext',
+        prevEl: '.videoSwiperPrev',
+      }" :breakpoints="{
           0: { slidesPerView: 1, spaceBetween: 32 },
           768: { slidesPerView: 2, spaceBetween: 32 },
         }" :modules="modules" class="mySwiper w-full">

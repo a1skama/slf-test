@@ -11,7 +11,8 @@
 
         <IconArrow />
       </button>
-      <NuxtLink to="/faq "
+      <NuxtLink to="/faq" @click="
+        closeModal('menu')"
         class="flex items-center justify-between px-6 text-white rounded-full h-11 bg-white-o2 uppercase">Вопрос-ответ
 
         <IconArrow />

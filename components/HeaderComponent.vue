@@ -7,13 +7,13 @@
     "
   >
     <div
-      class="relative flex items-center justify-between gap-4 py-4 _container"
+      class="relative flex items-center  gap-4 py-4 _container"
     >
       <NuxtLink to="/">
         <IconLogo />
       </NuxtLink>
       <div
-        class="gap-[30px] bg-white-o2 rounded-full xl:py-5 xl:px-8 hidden xl:flex"
+        class="gap-[30px] bg-white-o2 rounded-full xl:py-5 xl:px-8 hidden xl:flex ml-auto"
       >
         <button
           v-for="(link, linkId) in headerLinks"

@@ -1,6 +1,7 @@
 <template>
     <div class="fixed top-0 left-0 w-full h-full z-[999] md:p-10 overflow-scroll flex">
-        <div class="absolute inset-0 bg-white/20 backdrop-blur-2xl z-20 cursor-pointer w-full h-full" @click="closeModal('pay')">
+        <div class="absolute inset-0 bg-white/20 backdrop-blur-2xl z-20 cursor-pointer w-full h-full"
+            @click="closeModal('pay')">
         </div>
 
         <div
@@ -35,16 +36,81 @@
                 <form ref="formElement" class="grid grid-cols-1 xl:grid-cols-2 gap-[30px] items-end mt-8"
                     autocomplete="off" novalidate @submit.prevent="onSubmitForm">
                     <BaseInput v-model="form.name" :errors="v$.name.$errors" type="text" required placeholder="Имя*"
-                       class="w-full h-full" />
+                        class="w-full h-full" />
 
                     <BaseInput v-model="form.phone" :errors="v$.phone.$errors" type="tel" required
-                        maska="+7 (###) ###-##-##" placeholder="Телефон*"class="w-full h-full" />
+                        maska="+7 (###) ###-##-##" placeholder="Телефон*" class="w-full h-full" />
 
                     <BaseInput v-model="form.email" :errors="v$.email.$errors" type="email" label="Почта"
-                        placeholder="E-mail"class="w-full h-full" />
+                        placeholder="E-mail" class="w-full h-full" />
 
-                    <BaseInput type="text" maska="##.##.####" v-model="form.date" :errors="v$.date.$errors" label="Дата"
-                        required placeholder="Выберите дату и время*"class="w-full h-full"/>
+                    <!-- <BaseInput type="text"  v-model="form.date" :errors="v$.date.$errors" label="Дата"
+                        required placeholder="Выберите дату и время*"class="w-full h-full"/> -->
+                    <div class="relative w-full">
+                        <BaseInput type="text" v-model="form.date" :errors="v$.date.$errors" label="Дата" required
+                            placeholder="Выберите дату и время*" class="w-full h-full cursor-pointer" readonly
+                            @click="openDatePicker" />
+
+                        <div v-if="dateOpen"
+                            class="absolute z-50  flex flex-col gap-3 w-full bg-[#00113A] text-white p-5"
+                            ref="datePickerRef">
+                            <span class="text-sm uppercase text-center text-white w-full block">
+                                ВЫБЕРИТЕ ДАТУ И ВРЕМЯ
+                            </span>
+
+                            <!-- Даты -->
+                            <div class="flex items-center gap-1">
+                                <div
+                                    class="dateSwiperPrev h-7 w-7 bg-white flex items-center justify-center cursor-pointer">
+                                    <svg width="8" height="12" viewBox="0 0 8 12" fill="none"
+                                        xmlns="http://www.w3.org/2000/svg">
+                                        <path d="M6.75 11.5L1.25 6L6.75 0.5" stroke="#1F1F1F" />
+                                    </svg>
+                                </div>
+                                <swiper :slidesPerView="4" :spaceBetween="0" :navigation="{
+                                    nextEl: '.dateSwiperNext',
+                                    prevEl: '.dateSwiperPrev',
+                                }" :modules="modules" class="dateSwiper w-full">
+                                    <swiper-slide v-for="(day, i) in dates" :key="i" @click="selectedDate = day.date"
+                                        :class="[
+                                            'text-xs whitespace-nowrap transition-all duration-200 cursor-pointer !flex justify-center items-center text-white !h-7',
+                                            selectedDate === day.date
+                                                ? ' bg-blue-200 border border-blue-200'
+                                                : ' bg-transparent border border-white',
+                                        ]">
+                                        <span>
+                                            {{ day.label }}
+
+                                        </span>
+                                    </swiper-slide>
+
+                                </swiper>
+                                <div
+                                    class=" dateSwiperNext h-7 w-7 bg-white flex items-center justify-center cursor-pointer">
+                                    <svg width="8" height="12" viewBox="0 0 8 12" fill="none"
+                                        xmlns="http://www.w3.org/2000/svg">
+                                        <path d="M1.25 0.5L6.75 6L1.25 11.5" stroke="#1F1F1F" />
+                                    </svg>
+
+                                </div>
+                            </div>
+
+                            <!-- Время -->
+                            <div class="grid grid-cols-4 gap-[10px] max-h-[100px] overflow-auto">
+                                <button v-for="(time, i) in times" :key="i" @click="selectDateTime(time)" :class="[
+                                    'text-xs whitespace-nowrap transition-all duration-200 cursor-pointer !flex justify-center items-center text-white rounded-[8px] h-7 border border-white',
+                                    selectedTime === time ? 'bg-blue-200 border border-blue-200' : '',
+                                ]">
+                                    {{ time }}
+                                </button>
+                            </div>
+
+                            <button class="btn btn-white h-11" @click="applyDateTime">
+                                ПРИМЕНИТЬ
+                            </button>
+                        </div>
+                    </div>
+
 
                     <div class="flex flex-wrap items-center justify-center gap-5 col-span-full">
                         <div v-if="form.files" class="flex flex-wrap items-center gap-5">
@@ -141,13 +207,18 @@ import { required, minLength, email, sameAs } from "@vuelidate/validators";
 import { useFileDialog } from "@vueuse/core";
 const { closeModal } = useModal();
 
-
+import { Swiper, SwiperSlide } from "swiper/vue";
+import "swiper/css";
+import "swiper/css/navigation";
+import { Navigation } from "swiper/modules";
+const modules = [Navigation];
 import { ref, onMounted } from 'vue';
 import PayFile from '~/components/PayFile.vue';
+import { reactive, watch } from "vue";
+import { onClickOutside } from "@vueuse/core";
 
 let html2pdf
 onMounted(async () => {
-    // Динамически импортируем только на клиенте
     html2pdf = (await import('html2pdf.js')).default
 })
 
@@ -165,13 +236,74 @@ const generatePdf = async () => {
         jsPDF: { unit: 'in', format: 'a4', orientation: 'portrait' }
     }
 
-    // html2pdf().set(opt).from(element).save()
+    html2pdf().set(opt).from(element).save()
     const pdfBlob = await html2pdf().set(opt).from(element).outputPdf('blob')
     const pdfUrl = URL.createObjectURL(pdfBlob)
     window.open(pdfUrl, '_blank')
 }
 
 
+const dateOpen = ref(false);
+const selectedDate = ref(null);
+const selectedTime = ref(null);
+const datePickerRef = ref(null);
+
+const dates = [
+    { date: "2025-09-21", label: "21.09, ПН" },
+    { date: "2025-09-22", label: "22.09, ВТ" },
+    { date: "2025-09-23", label: "23.09, СР" },
+    { date: "2025-09-24", label: "24.09, ЧТ" },
+    { date: "2025-09-25", label: "25.09, ПН" },
+    { date: "2025-09-26", label: "26.09, ВТ" },
+    { date: "2025-09-27", label: "27.09, СР" },
+    { date: "2025-09-28", label: "28.09, ЧТ" },
+];
+
+const times = [
+    "09:00",
+    "09:30",
+    "10:00",
+    "10:30",
+    "11:00",
+    "11:30",
+    "12:00",
+    "12:30",
+    "13:00",
+    "13:30",
+    "14:00",
+    "14:30",
+    "15:00",
+    "15:30",
+    "16:00",
+    "16:30",
+    "17:00",
+    "17:30",
+];
+
+// --- Открытие и автоматическая подстановка первой даты/времени ---
+function openDatePicker() {
+    dateOpen.value = true;
+    if (!selectedDate.value) selectedDate.value = dates[0].date;
+    if (!selectedTime.value) selectedTime.value = times[0];
+}
+
+// --- Выбор времени ---
+function selectDateTime(time) {
+    selectedTime.value = time;
+}
+
+// --- Применение выбора ---
+function applyDateTime() {
+    if (selectedDate.value && selectedTime.value) {
+        form.date = `${selectedDate.value} ${selectedTime.value}`;
+        dateOpen.value = false;
+    }
+}
+
+// --- Клик вне блока для закрытия ---
+onClickOutside(datePickerRef, () => {
+    dateOpen.value = false;
+});
 
 
 

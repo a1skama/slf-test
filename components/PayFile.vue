@@ -3,7 +3,7 @@
     <div class="flex items-start justify-between mb-6">
       <IconLogoFile class="h-[50px] w-fit" />
 
-      <div class="text-right text-sm text-black">
+      <div class="text-right text-xs text-black">
         <div>ИП Андрей Семин </div>
         <div>603022,г. Нижний Новгород, <br> ул. Оранжерейная 1-я, д. 44, кв. 10</div>
 
