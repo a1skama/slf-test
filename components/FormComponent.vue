@@ -143,7 +143,7 @@
           </div>
 
           <label
-            class="flex items-center justify-center gap-2 text-sm 2xl:text-base xl:col-span-2"
+            class="flex  justify-center gap-2 text-sm 2xl:text-base xl:col-span-2"
           >
             <div class="relative w-5 h-5">
               <input
@@ -157,15 +157,15 @@
               />
             </div>
 
-            <span class="text-white"> Я согласен на обработку</span>
-
-            <NuxtLink
+            <span class="text-white"> Я согласен на обработку  <NuxtLink
               :to="contacts.personalConsent.url"
               target="_blank"
               class="text-blue-300"
             >
-              персональных данных.
-            </NuxtLink>
+              Персональных данных.
+            </NuxtLink></span>
+
+           
           </label>
 
           <div class="flex justify-center w-full xl:col-span-2">

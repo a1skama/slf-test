@@ -147,7 +147,7 @@
                         </button>
                     </div>
 
-                    <label class="flex items-center justify-center gap-2 text-sm 2xl:text-base xl:col-span-2">
+                    <label class="flex  justify-center gap-2 text-sm 2xl:text-base xl:col-span-2">
                         <div class="relative w-5 h-5">
                             <input type="checkbox"
                                 class="h-5 w-5 cursor-pointer appearance-none border border-[#68768F] hover:border-[#A3B8D0] transition-colors duration-500 checked:border-white peer"
@@ -157,11 +157,11 @@
                                 class="absolute hidden -translate-x-1/2 -translate-y-1/2 left-1/2 top-1/2 peer-checked:block w-4 h-2.5" />
                         </div>
 
-                        <span class="text-white"> Я согласен на обработку</span>
+                        <span class="text-white"> Я согласен на обработку  <NuxtLink to="" target="_blank" class="text-blue-300">
+                            Персональных данных.
+                        </NuxtLink></span>
 
-                        <NuxtLink to="" target="_blank" class="text-blue-300">
-                            персональных данных.
-                        </NuxtLink>
+                       
                     </label>
 
                     <div class="flex justify-center w-full xl:col-span-2">
