@@ -2,7 +2,8 @@
  * Утилиты для работы со счетами (версия с библиотекой number-to-words-ru)
  */
 
-import { convert as convertNumberToWordsRu } from "number-to-words-ru";
+import pkg from "number-to-words-ru";
+const { convert: convertNumberToWordsRu } = pkg;
 
 /**
  * Преобразует число в сумму прописью на русском языке с правильными склонениями
@@ -11,7 +12,7 @@ import { convert as convertNumberToWordsRu } from "number-to-words-ru";
  */
 export function numberToWords(amount) {
   if (amount === 0) {
-    return "ноль рублей";
+    return "Ноль рублей";
   }
 
   try {
@@ -36,38 +37,18 @@ export function numberToWords(amount) {
 
 /**
  * Форматирует дату в нужном формате для счета
- * @param {Date|string} date - Дата
- * @returns {string} Отформатированная дата
  */
 export function formatInvoiceDate(date) {
   const d = new Date(date);
-
   const months = [
-    "января",
-    "февраля",
-    "марта",
-    "апреля",
-    "мая",
-    "июня",
-    "июля",
-    "августа",
-    "сентября",
-    "октября",
-    "ноября",
-    "декабря",
+    "января", "февраля", "марта", "апреля", "мая", "июня",
+    "июля", "августа", "сентября", "октября", "ноября", "декабря",
   ];
-
-  const day = d.getDate();
-  const month = months[d.getMonth()];
-  const year = d.getFullYear();
-
-  return `${day} ${month} ${year} г.`;
+  return `${d.getDate()} ${months[d.getMonth()]} ${d.getFullYear()} г.`;
 }
 
 /**
  * Форматирует цену с разделителями тысяч
- * @param {number} price - Цена
- * @returns {string} Отформатированная цена
  */
 export function formatPrice(price) {
   return Number(price).toLocaleString("ru-RU", {
@@ -78,7 +59,6 @@ export function formatPrice(price) {
 
 /**
  * Генерирует текущую дату в формате для счета
- * @returns {string} Текущая дата
  */
 export function getCurrentInvoiceDate() {
   return formatInvoiceDate(new Date());
