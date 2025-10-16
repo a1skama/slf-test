@@ -1,15 +1,19 @@
 <template>
   <div class="flex flex-col">
-    <input
-      :value="modelValue"
-      :type="type"
-      :placeholder="inputPlaceholder"
-      v-maska="maska"
-      class="py-4 text-sm text-white transition-colors duration-500 bg-transparent border-b border-blue-400 2xl:text-base hover:border-white placeholder:text-white focus-visible:outline-none focus:border-white"
-      @input="$emit('update:modelValue', $event.target.value)"
-      @focus="clearPlaceholder"
-      @blur="resetPlaceholder"
-    />
+    <label class="relative">
+      <input
+        :value="modelValue"
+        :type="type"
+        :placeholder="inputPlaceholder"
+        v-maska="maska"
+        class="w-full py-4 text-sm text-white transition-colors duration-500 bg-transparent border-b border-blue-400 2xl:text-base hover:border-white placeholder:text-white focus-visible:outline-none focus:border-white"
+        @input="$emit('update:modelValue', $event.target.value)"
+        @focus="clearPlaceholder"
+        @blur="resetPlaceholder"
+      />
+
+      <slot name="icon"></slot>
+    </label>
 
     <span v-if="errors.length" class="text-[#A3B8D0] leading-none mt-4">
       Некорректно введена переменная, пожалуйста попробуйте снова.

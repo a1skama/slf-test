@@ -2,19 +2,13 @@
   <header
     ref="headerRef"
     class="fixed top-0 left-0 z-30 w-full transition-transform duration-300 bg-blue-100"
-    :class="
-      isHeaderHidden ? '!-translate-y-[calc(100%+1px)]' : 'transform-none'
-    "
+    :class="isHeaderHidden ? '!-translate-y-[calc(100%+1px)]' : 'transform-none'"
   >
-    <div
-      class="relative flex items-center  gap-4 py-4 _container"
-    >
+    <div class="relative flex items-center gap-4 py-4 _container">
       <NuxtLink to="/">
         <IconLogo />
       </NuxtLink>
-      <div
-        class="gap-[30px] bg-white-o2 rounded-full xl:py-5 xl:px-8 hidden xl:flex ml-auto"
-      >
+      <div class="gap-[30px] bg-white-o2 rounded-full xl:py-5 xl:px-8 hidden xl:flex ml-auto">
         <button
           v-for="(link, linkId) in headerLinks"
           :key="linkId"
@@ -27,12 +21,13 @@
 
       <div class="flex items-center gap-5 shrink-0">
         <div class="hidden gap-5 sm:flex h-11 xl:h-fit">
-            <NuxtLink
+          <!-- <NuxtLink
             to="/faq"
             class="btn btn-white-02 !hidden xl:!flex"
           >
             Вопрос-ответ
-          </NuxtLink>
+          </NuxtLink> -->
+
           <NuxtLink
             :to="formatPhoneNumber(contacts.phones[0].value)"
             class="btn btn-white-02"
@@ -40,7 +35,10 @@
             {{ contacts.phones[0].value }}
           </NuxtLink>
 
-          <button @click="openModal('form')" class="btn btn-white">
+          <button
+            class="btn btn-white"
+            @click="scrollToSection('services')"
+          >
             <IconArrow />
 
             <span>Решить проблему</span>
@@ -67,117 +65,117 @@
 </template>
 
 <script setup>
-import { gsap } from "gsap";
-import { ScrollTrigger } from "gsap/ScrollTrigger";
-import { useWindowScroll } from "@vueuse/core";
+  import { gsap } from 'gsap';
+  import { ScrollTrigger } from 'gsap/ScrollTrigger';
+  import { useWindowScroll } from '@vueuse/core';
 
-gsap.registerPlugin(ScrollTrigger);
+  gsap.registerPlugin(ScrollTrigger);
 
-const props = defineProps({
-  contacts: {
-    type: Object,
-    required: true,
-  },
-});
+  const props = defineProps({
+    contacts: {
+      type: Object,
+      required: true,
+    },
+  });
 
-const route = useRoute();
+  const route = useRoute();
 
-const { openModal, closeModal, isOpen } = useModal();
+  const { openModal, closeModal, isOpen } = useModal();
 
-const headerLinks = [
-  {
-    title: "Практики",
-    link: "practices",
-  },
-  {
-    title: "Цифры",
-    link: "numbers",
-  },
-  {
-    title: "Кейсы",
-    link: "cases",
-  },
-  {
-    title: "О нас",
-    link: "about",
-  },
-  {
-    title: "Сертификаты",
-    link: "certificates",
-  },
-  {
-    title: "Контакты",
-    link: "contacts",
-  },
-];
-
-const headerRef = ref(null);
-
-onMounted(() => {
-  gsap.fromTo(
-    headerRef.value,
-    { y: -100, opacity: 0 },
+  const headerLinks = [
     {
-      y: 0,
-      opacity: 1,
-      duration: 1.5,
-      ease: "power3.out",
+      title: 'Практики',
+      link: 'practices',
+    },
+    {
+      title: 'Цифры',
+      link: 'numbers',
+    },
+    {
+      title: 'Кейсы',
+      link: 'cases',
+    },
+    {
+      title: 'О нас',
+      link: 'about',
+    },
+    {
+      title: 'Сертификаты',
+      link: 'certificates',
+    },
+    {
+      title: 'Контакты',
+      link: 'contacts',
+    },
+  ];
+
+  const headerRef = ref(null);
+
+  onMounted(() => {
+    gsap.fromTo(
+      headerRef.value,
+      { y: -100, opacity: 0 },
+      {
+        y: 0,
+        opacity: 1,
+        duration: 1.5,
+        ease: 'power3.out',
+      },
+    );
+  });
+
+  let lastScroll = 0;
+  const { x, y } = useWindowScroll();
+  const isHeaderHidden = ref(false);
+
+  watch(y, (currentY) => {
+    if (currentY === 0) {
+      headerRef.value.classList.remove('transform-none');
+      return;
     }
+
+    if (currentY > lastScroll) {
+      // down
+      isHeaderHidden.value = true;
+      closeModal('menu');
+    } else if (currentY < lastScroll) {
+      // up
+      isHeaderHidden.value = false;
+    }
+
+    lastScroll = currentY;
+  });
+
+  watch(
+    route,
+    () => {
+      isHeaderHidden.value = false;
+    },
+    { deep: true },
   );
-});
 
-let lastScroll = 0;
-const { x, y } = useWindowScroll();
-const isHeaderHidden = ref(false);
+  const scrollToSection = (id, offset = 0) => {
+    const element = document.getElementById(id);
+    if (element) {
+      const bodyRect = document.body.getBoundingClientRect().top;
+      const elementRect = element.getBoundingClientRect().top;
+      const elementPosition = elementRect - bodyRect;
+      const offsetPosition = elementPosition - offset;
 
-watch(y, (currentY) => {
-  if (currentY === 0) {
-    headerRef.value.classList.remove("transform-none");
-    return;
-  }
+      window.scrollTo({
+        top: offsetPosition,
+        behavior: 'smooth', // Плавный скролл
+      });
+    }
+  };
 
-  if (currentY > lastScroll) {
-    // down
-    isHeaderHidden.value = true;
-    closeModal("menu");
-  } else if (currentY < lastScroll) {
-    // up
-    isHeaderHidden.value = false;
-  }
+  const formatPhoneNumber = (phoneNumber) => {
+    const cleaned = phoneNumber.replace(/[^+\d]/g, '');
 
-  lastScroll = currentY;
-});
+    if (cleaned.length === 0 || (cleaned.includes('+') && cleaned[0] !== '+')) {
+      return '';
+    }
 
-watch(
-  route,
-  () => {
-    isHeaderHidden.value = false;
-  },
-  { deep: true }
-);
-
-const scrollToSection = (id, offset = 0) => {
-  const element = document.getElementById(id);
-  if (element) {
-    const bodyRect = document.body.getBoundingClientRect().top;
-    const elementRect = element.getBoundingClientRect().top;
-    const elementPosition = elementRect - bodyRect;
-    const offsetPosition = elementPosition - offset;
-
-    window.scrollTo({
-      top: offsetPosition,
-      behavior: "smooth", // Плавный скролл
-    });
-  }
-};
-
-const formatPhoneNumber = (phoneNumber) => {
-  const cleaned = phoneNumber.replace(/[^+\d]/g, "");
-
-  if (cleaned.length === 0 || (cleaned.includes("+") && cleaned[0] !== "+")) {
-    return "";
-  }
-
-  return `tel:${cleaned}`;
-};
+    return `tel:${cleaned}`;
+  };
 </script>

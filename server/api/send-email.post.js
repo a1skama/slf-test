@@ -16,6 +16,11 @@ export default defineEventHandler(async (event) => {
   const config = useRuntimeConfig();
   const body = await readBody(event);
 
+  let invoiceNumber = "";
+  if (body.invoiceNumber) {
+    invoiceNumber = `\n    Номер счета: ${body.invoiceNumber}`;
+  }
+
   const options = {
     subject: "Новая заявка с сайта - slf.expert",
     text: `
@@ -25,19 +30,28 @@ export default defineEventHandler(async (event) => {
 
     E-mail: ${body.email}
 
-    Практика: ${body.practic}
+    ${body.service ? `Услуга: ${body.service}` : ""}
 
-    Комментарий: ${body.comment}
+    ${body.expert ? `Специалист: ${body.expert}` : ""}
+
+    ${body.price ? `Стоимость: ${body.price} ₽` : ""}${invoiceNumber}
+
+    ${body.practic ? `Практика: ${body.practic}` : ""}
+
+    ${body.comment ? `Комментарий: ${body.comment}` : ""}
+
+    ${body.date ? `Дата и время: ${body.date}` : ""}
 
     `,
-    attachments: body.files.map((file) => {
-      if (file) {
-        return {
-          filename: file.name,
-          content: Buffer.from(file.content, "base64"), // предполагается, что файл передается в base64
-        };
-      }
-    }),
+    attachments:
+      body.files?.map((file) => {
+        if (file) {
+          return {
+            filename: file.name,
+            content: Buffer.from(file.content, "base64"), // предполагается, что файл передается в base64
+          };
+        }
+      }) || [],
   };
 
   const mailOptions = {

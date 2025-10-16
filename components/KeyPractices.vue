@@ -1,5 +1,8 @@
 <template>
-  <div class="bg-gray-400" id="practices">
+  <div
+    class="bg-gray-400"
+    id="practices"
+  >
     <div
       class="_container flex flex-col gap-5 sm:gap-6 xl:gap-[30px] 2xl:gap-10 py-[60px] sm:py-20 xl:py-[120px] 2xl:py-[200px]"
     >
@@ -44,11 +47,8 @@
           </ul>
 
           <button
-            @click="
-              openModal('form');
-              activePracticeId = practicIndex + 1;
-            "
             class="btn btn-main"
+            @click="scrollToSection('services')"
           >
             <IconArrow />
 
@@ -61,74 +61,89 @@
 </template>
 
 <script setup>
-import { ref, onMounted } from "vue";
-import { gsap } from "gsap";
-import { ScrollTrigger } from "gsap/ScrollTrigger";
+  import { ref, onMounted } from 'vue';
+  import { gsap } from 'gsap';
+  import { ScrollTrigger } from 'gsap/ScrollTrigger';
 
-gsap.registerPlugin(ScrollTrigger);
+  gsap.registerPlugin(ScrollTrigger);
 
-const props = defineProps({
-  data: {
-    type: Object,
-    required: true,
-  },
-});
+  const props = defineProps({
+    data: {
+      type: Object,
+      required: true,
+    },
+  });
 
-const { openModal } = useModal();
+  const { openModal } = useModal();
 
-const { activePracticeId } = usePractices();
+  const { activePracticeId } = usePractices();
 
-const header = ref(null);
-const blocks = ref([]);
-const blocksArray = ref([]);
-const mediaQuery = ref(null);
+  const header = ref(null);
+  const blocks = ref([]);
+  const blocksArray = ref([]);
+  const mediaQuery = ref(null);
 
-onMounted(() => {
-  // Проверяем, что мы на клиенте
-  if (process.client) {
-    mediaQuery.value = window.matchMedia("(min-width: 1280px)");
+  onMounted(() => {
+    // Проверяем, что мы на клиенте
+    if (process.client) {
+      mediaQuery.value = window.matchMedia('(min-width: 1280px)');
 
-    if (mediaQuery.value.matches) {
-      gsap.fromTo(
-        header.value,
-        { y: 50, opacity: 0 },
-        {
-          y: 0,
-          opacity: 1,
-          duration: 4,
-          ease: "power3.out",
-          scrollTrigger: {
-            trigger: header.value,
-            start: "top 90%",
-            end: "top 90%",
-            scrub: true,
-            markers: false,
-          },
-        }
-      );
-
-      blocks.value.forEach((block) => {
+      if (mediaQuery.value.matches) {
         gsap.fromTo(
-          block,
+          header.value,
           { y: 50, opacity: 0 },
           {
             y: 0,
             opacity: 1,
-            duration: 2,
-            ease: "power3.out",
+            duration: 4,
+            ease: 'power3.out',
             scrollTrigger: {
-              trigger: block,
-              start: "top 95%",
-              end: "top 90%",
+              trigger: header.value,
+              start: 'top 90%',
+              end: 'top 90%',
               scrub: true,
               markers: false,
             },
-
-            // stagger: 0.3,
-          }
+          },
         );
+
+        blocks.value.forEach((block) => {
+          gsap.fromTo(
+            block,
+            { y: 50, opacity: 0 },
+            {
+              y: 0,
+              opacity: 1,
+              duration: 2,
+              ease: 'power3.out',
+              scrollTrigger: {
+                trigger: block,
+                start: 'top 95%',
+                end: 'top 90%',
+                scrub: true,
+                markers: false,
+              },
+
+              // stagger: 0.3,
+            },
+          );
+        });
+      }
+    }
+  });
+
+  const scrollToSection = (id, offset = 0) => {
+    const element = document.getElementById(id);
+    if (element) {
+      const bodyRect = document.body.getBoundingClientRect().top;
+      const elementRect = element.getBoundingClientRect().top;
+      const elementPosition = elementRect - bodyRect;
+      const offsetPosition = elementPosition - offset;
+
+      window.scrollTo({
+        top: offsetPosition,
+        behavior: 'smooth', // Плавный скролл
       });
     }
-  }
-});
+  };
 </script>
